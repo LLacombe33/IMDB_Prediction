@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Predict IMDB Binned Score</title>
+    <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+	<div class="container">
+		<div class="login">
+			<h1>Predict IMDB Binned Score</h1>
+			<h3>Enter the following values to predict the IMDB binned score</h3>
+
+			<!-- Main Input For Receiving Query to our ML -->
+			<form id="predict-form" action="{{ url_for('predict') }}" method="post">
+				<input type="text" name="duration" placeholder="Duration - between 25 and 330" required="required" />
+				<input type="text" name="director_fb_likes" placeholder="Director Facebook Likes - between 2 and 23000" required="required" />
+				<input type="text" name="actor_1_fb_likes" placeholder="Actor 1 Facebook Likes - between 6 and 640000" required="required" />
+				<input type="text" name="gross" placeholder="Gross - between 162 and 650000000" required="required" />
+				<input type="text" name="num_voted_users" placeholder="Number of Voted Users - between 37 and 1600000" required="required" />
+				<input type="text" name="facenumber_in_poster" placeholder="Face Number in Poster - between 0 and 43" required="required" />
+				<input type="text" name="budget" placeholder="Budget - between 1100 and 12210000000" required="required" />
+				<input type="text" name="title_year" placeholder="Title Year - between 1927 and 2016" required="required" />
+				<input type="text" name="aspect_ratio" placeholder="Aspect Ratio - between 1.2 and 16.0" required="required" />
+				<input type="text" name="movie_fb_likes" placeholder="Movie Facebook Likes - between 7 and 349000" required="required" />
+				<input type="text" name="Other_actor_fb_likes" placeholder="Other Actor Facebook Likes - between 5 and 137748" required="required" />
+				<input type="text" name="critic_review_ratio" placeholder="Critic Review Ratio - between 1 and 21" required="required" />
+				<input type="text" name="country_USA" placeholder="Country USA - 0 or 1" required="required" />
+				<input type="text" name="country_other" placeholder="Country Other - 0 or 1" required="required" />
+				<input type="text" name="content_rating_NC-17" placeholder="Content Rating NC-17 - 0 or 1" required="required" />
+				<input type="text" name="content_rating_PG" placeholder="Content Rating PG - 0 or 1" required="required" />
+				<input type="text" name="content_rating_PG-13" placeholder="Content Rating PG-13 - 0 or 1" required="required" />
+				<input type="text" name="content_rating_R" placeholder="Content Rating R - 0 or 1" required="required" />
+				<input type="text" name="content_rating_TV-G" placeholder="Content Rating TV-G - 0 or 1" required="required" />
+				<input type="text" name="content_rating_TV-PG" placeholder="Content Rating TV-PG - 0 or 1" required="required" />
+				<input type="text" name="content_rating_UR" placeholder="Content Rating UR - 0 or 1" required="required" />
+
+				<button type="submit" class="btn">Predict</button>
+			</form>
+
+			<br>
+			<br>
+			{{ prediction_text }}
+
+		</div>
+	</div>
+
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#predict-form').submit(function(event){
+            event.preventDefault();
+            var form_data = $(this).serialize();
+            $.ajax({
+                type: 'POST',
+                url: '/predict',
+                data: form_data,
+                success: function(response){
+                    $('#prediction-text').text('Predicted IMDB binned score: ' + response.prediction);
+                },
+                error: function(error){
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+
+</html>
